@@ -1,0 +1,3 @@
+Fix edgetoedge UI layout
+Fix dim screen during phone calls
+Switch service state from notification

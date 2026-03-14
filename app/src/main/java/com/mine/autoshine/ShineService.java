@@ -23,9 +23,12 @@ public class ShineService extends Service {
 			int extra = intent.getIntExtra(Constants.SERVICE_INTENT_EXTRA, -1);
 
 			if (extra == Constants.SERVICE_INTENT_PAYLOAD_PING) {
-				Toast.makeText(context, getResources().getString(R.string.service_running) + "\n" +
-						getResources().getString(R.string.sensor_c) + " " + shiner.getLastSensorValue() + ",  " +
-						getResources().getString(R.string.brightness_c) + " " + shiner.getSetBrightness(),
+				Toast.makeText(context, getResources().getString(R.string.service_running) +
+								" (" +
+								(shiner.getOnListen() ? getResources().getString(R.string.active) : getResources().getString(R.string.suspended)).toLowerCase() +
+								")\n" +
+								getResources().getString(R.string.sensor_c) + " " + shiner.getLastSensorValue() + ",  " +
+								getResources().getString(R.string.brightness_c) + " " + shiner.getSetBrightness(),
 						Toast.LENGTH_SHORT).show();
 			}
 
@@ -35,7 +38,12 @@ public class ShineService extends Service {
 			}
 
 			if (intent.getIntExtra(Constants.SERVICE_INTENT_EXTRA_TAP, -1) == 0) {
-				shiner.startListening();
+				if (shiner.getOnListen()) {
+					shiner.stopListening();
+					Toast.makeText(context, getResources().getString(R.string.suspended), Toast.LENGTH_SHORT).show();
+				} else {
+					shiner.startListening();
+				}
 			}
 		}
 	};

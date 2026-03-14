@@ -167,4 +167,8 @@ public class ShineControl implements SensorEventListener {
 	public int getSetBrightness() {
 		return tempBrightness;
 	}
+
+	public boolean getOnListen() {
+		return onListen;
+	}
 }

@@ -7,6 +7,7 @@ public class MySettings {
 	private final Context context;
 	private SharedPreferences sharedPref;
 	public int l1, l2, l3, l4, b1, b2, b3, b4;
+	public int threshold;
 	public int mode;
 
 	MySettings(Context context) {
@@ -24,6 +25,7 @@ public class MySettings {
 		b2 = sharedPref.getInt("b2", 63);
 		b3 = sharedPref.getInt("b3", 127);
 		b4 = sharedPref.getInt("b4", 255);
+		threshold = sharedPref.getInt("threshold", 0);
 		mode = sharedPref.getInt("mode", Constants.WORK_MODE_ALWAYS);
 	}
 
@@ -37,6 +39,7 @@ public class MySettings {
 		editor.putInt("b2", b2);
 		editor.putInt("b3", b3);
 		editor.putInt("b4", b4);
+		editor.putInt("threshold", threshold);
 		editor.putInt("mode", mode);
 		editor.commit();
 	}

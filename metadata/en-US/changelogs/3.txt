@@ -1,0 +1,1 @@
+Add threshold to prevent screen flicker

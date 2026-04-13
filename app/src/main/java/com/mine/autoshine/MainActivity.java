@@ -25,6 +25,7 @@ public class MainActivity extends Activity {
 
 	private EditText etSensor1, etSensor2, etSensor3, etSensor4;
 	private EditText etBrightness1, etBrightness2, etBrightness3, etBrightness4;
+	private EditText etThreshold;
 
 	private PowerManager powerMan;
 	private MySettings sett;
@@ -100,6 +101,8 @@ public class MainActivity extends Activity {
 		etBrightness3 = findViewById(R.id.et_brightness_value_3);
 		etBrightness4 = findViewById(R.id.et_brightness_value_4);
 
+		etThreshold = findViewById(R.id.et_threshold);
+
 		refillCollapsibleSettings();
 
 		Button btnSave = findViewById(R.id.btn_save_settings);
@@ -112,6 +115,7 @@ public class MainActivity extends Activity {
 			sett.b2 = Integer.parseInt(etBrightness2.getText().toString());
 			sett.b3 = Integer.parseInt(etBrightness3.getText().toString());
 			sett.b4 = Integer.parseInt(etBrightness4.getText().toString());
+			sett.threshold = Integer.parseInt(etThreshold.getText().toString());
 
 			sett.save();
 			sendBroadcastToService(Constants.SERVICE_INTENT_PAYLOAD_SET);
@@ -292,5 +296,7 @@ public class MainActivity extends Activity {
 		etBrightness2.setText(String.valueOf(sett.b2));
 		etBrightness3.setText(String.valueOf(sett.b3));
 		etBrightness4.setText(String.valueOf(sett.b4));
+
+		etThreshold.setText(String.valueOf(sett.threshold));
 	}
 }

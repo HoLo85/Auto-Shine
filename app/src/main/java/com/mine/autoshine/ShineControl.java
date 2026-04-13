@@ -137,7 +137,7 @@ public class ShineControl implements SensorEventListener {
 
 		int currentBrightness = Settings.System.getInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, 0);
 		tempBrightness = brightness;
-		if (currentBrightness != brightness) {
+		if (Math.abs(currentBrightness - brightness) > sett.threshold) {
 			Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
 		}
 

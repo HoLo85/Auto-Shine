@@ -1,0 +1,2 @@
+Fix flickering screen
+Attempt to keep the service from being stopped

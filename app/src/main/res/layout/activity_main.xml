@@ -18,14 +18,14 @@
             android:paddingRight="12dp"
             android:paddingBottom="12dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="14sp"
-                android:text="@string/label_light_settings"
-                android:textAlignment="textStart"
-                android:textSize="22sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/label_light_settings"
+            android:textAlignment="center"
+            android:textSize="22sp" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="10sp">
+                    android:paddingBottom="10dp">
 
                     <TextView
                         android:id="@+id/textView"
@@ -338,7 +338,7 @@
                 <Button
                     android:id="@+id/btn_save_settings"
                     android:layout_width="match_parent"
-                    android:layout_height="60sp"
+                    android:layout_height="60dp"
                     android:text="@string/save_settings"
                     android:textSize="20sp" />
 
@@ -364,8 +364,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:text="@string/label_work_mode"
-            android:textAlignment="textStart"
+            android:textAlignment="center"
             android:textSize="22sp" />
 
         <LinearLayout
@@ -436,7 +437,7 @@
         <Button
             android:id="@+id/btn_start_stop"
             android:layout_width="match_parent"
-            android:layout_height="60sp"
+            android:layout_height="60dp"
             android:layout_weight="0.7"
             android:text="@string/service_stopped"
             android:textSize="20sp" />
@@ -459,7 +460,7 @@
             <Button
                 android:id="@+id/btn_battery_req"
                 android:layout_width="match_parent"
-                android:layout_height="60sp"
+                android:layout_height="60dp"
                 android:layout_weight="0.7"
                 android:text="@string/btn_battery_req"
                 android:textSize="16sp" />

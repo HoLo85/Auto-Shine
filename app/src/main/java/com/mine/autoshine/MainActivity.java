@@ -305,7 +305,7 @@ public class MainActivity extends Activity {
                 unregisterReceiver(sensorBroadcastReceiver);
             }
         } catch (IllegalArgumentException e) {
-            Log.w(TAG, "Problem while de-/registering auto light receiver, receiver may have been already de-/registered.");
+            Log.w(TAG, "Problem while de-/registering auto shine receiver, receiver may have been already de-/registered.");
         }
     }
 

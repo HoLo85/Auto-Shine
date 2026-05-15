@@ -43,10 +43,8 @@ public class ShineService extends Service {
         sys.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
 
         IntentFilter cmd = new IntentFilter(Constants.SERVICE_INTENT_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(systemReceiver, sys, Context.RECEIVER_EXPORTED);
-            registerReceiver(commandReceiver, cmd, Context.RECEIVER_NOT_EXPORTED);
-        }
+        registerReceiver(systemReceiver, sys, Context.RECEIVER_EXPORTED);
+        registerReceiver(commandReceiver, cmd, Context.RECEIVER_NOT_EXPORTED);
 
         sendServiceStatus(Constants.SERVICE_STATUS_RUNNING);
     }

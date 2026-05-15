@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -261,9 +260,7 @@ public class MainActivity extends Activity {
 
     private void requestNotificationPermission() {
         if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 123);
-            }
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 123);
         }
     }
 
@@ -303,9 +300,7 @@ public class MainActivity extends Activity {
                 IntentFilter light = new IntentFilter();
                 light.addAction(Constants.SERVICE_INTENT_SENSOR);
                 light.addAction(Constants.SERVICE_INTENT_STATUS);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    registerReceiver(sensorBroadcastReceiver, light, Context.RECEIVER_NOT_EXPORTED);
-                }
+                registerReceiver(sensorBroadcastReceiver, light, Context.RECEIVER_NOT_EXPORTED);
             } else {
                 unregisterReceiver(sensorBroadcastReceiver);
             }

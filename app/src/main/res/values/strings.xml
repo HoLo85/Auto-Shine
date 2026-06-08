@@ -31,4 +31,5 @@
         Allow app background usage to prevent this.
     </string>
     <string name="btn_battery_req">Request</string>
+    <string name="suspended">Suspended</string>
 </resources>

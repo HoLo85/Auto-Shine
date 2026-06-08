@@ -13,6 +13,7 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.mine.autoshine.Constants;
 import com.mine.autoshine.MySettings;
@@ -155,6 +156,15 @@ public class ShineService extends Service {
 
             if (Constants.SERVICE_INTENT_PAYLOAD_SET.equals(payload)) {
                 shineControl.reconfigure();
+            }
+
+            if (intent.getIntExtra(Constants.SERVICE_INTENT_EXTRA_TAP, -1) == 0) {
+                if (shineControl.getOnListen()) {
+                    shineControl.stopListening();
+                    Toast.makeText(context, getResources().getString(R.string.suspended), Toast.LENGTH_SHORT).show();
+                } else {
+                    shineControl.startListening();
+                }
             }
         }
     };

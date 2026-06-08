@@ -220,6 +220,10 @@ public class ShineControl implements SensorEventListener {
         };
     }
 
+    public boolean getOnListen() {
+        return onListen;
+    }
+
     private void processSmoothedLux() {
         if (buffer.isEmpty()) return;
 

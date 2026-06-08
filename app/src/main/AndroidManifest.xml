@@ -38,7 +38,7 @@
         </service>
 
         <service
-            android:name="QTileService"
+            android:name=".services.QTileService"
             android:exported="true"
             android:icon="@drawable/ic_tile_icon"
             android:label="@string/app_name"

@@ -3,6 +3,7 @@ package com.mine.autoshine.services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -100,6 +101,16 @@ public class ShineService extends Service {
     }
 
     @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        // This is called if the user swipes the app away from the recent tasks list.
+        // We attempt to restart the service to keep the backlight control running.
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        restartServiceIntent.setPackage(getPackageName());
+        startService(restartServiceIntent);
+        super.onTaskRemoved(rootIntent);
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
@@ -149,10 +160,32 @@ public class ShineService extends Service {
     };
 
     private void createNotificationChannel() {
+        // Importance LOW keeps the notification silent but helps prevent the service
+        // from being killed for battery saving.
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID, getString(R.string.service_name), NotificationManager.IMPORTANCE_LOW);
-        NotificationManager manager = getSystemService(NotificationManager.class);
-        if (manager != null) manager.createNotificationChannel(channel);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
+
+            Intent tapIntent = new Intent();
+            tapIntent.putExtra(Constants.SERVICE_INTENT_EXTRA_TAP, 0);
+            tapIntent.setAction(Constants.SERVICE_INTENT_ACTION);
+            PendingIntent tapPendingIntent = PendingIntent.getBroadcast(
+                    this, 0, tapIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+
+            Notification.Builder notificationBuilder = new Notification.Builder(this, CHANNEL_ID);
+            Notification mNotification = notificationBuilder.setOngoing(true)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .setContentIntent(tapPendingIntent)
+                    .build();
+
+            startForeground(123, mNotification);
+        }
     }
 
     private void sendServiceStatus(final int status) {

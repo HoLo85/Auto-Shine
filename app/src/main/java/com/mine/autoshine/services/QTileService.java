@@ -1,7 +1,9 @@
-package com.mine.autoshine;
+package com.mine.autoshine.services;
 
 import android.content.Intent;
 import android.service.quicksettings.TileService;
+
+import com.mine.autoshine.Constants;
 
 public class QTileService extends TileService {
 

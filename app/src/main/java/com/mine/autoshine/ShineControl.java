@@ -12,16 +12,12 @@ import android.hardware.SensorManager;
 import android.hardware.display.DisplayManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
 
 import com.mine.autoshine.services.ShineService;
-
-import java.util.ArrayDeque;
-import java.util.Objects;
 
 public class ShineControl implements SensorEventListener {
 
@@ -40,17 +36,8 @@ public class ShineControl implements SensorEventListener {
     private boolean onListen = false;
     private boolean landscape = false;
     private boolean needsImmediateUpdate = false;
-    private float lastLux = 0;
     private float rawLux = 0;
-    private static final long WINDOW_MS = 3000;
     private static final long PAUSE = 2500;
-    // Hysteresis
-    private static final float HYSTERESIS_THRESHOLD = 0.15f;
-
-    // Window smoothing settings
-    private final ArrayDeque<SensorReading> buffer = new ArrayDeque<>();
-    private float lastAppliedLux = -1f;
-    private float rollingSum = 0f;
 
     private final Context mContext;
     private final TelephonyManager telephonyManager;
@@ -77,34 +64,11 @@ public class ShineControl implements SensorEventListener {
         }
 
         rawLux = event.values[0];
-        long now = SystemClock.elapsedRealtime();
-
-        buffer.add(new SensorReading(now, rawLux));
-        rollingSum += rawLux;
-
-        while (!buffer.isEmpty() && (now - Objects.requireNonNull(buffer.peekFirst()).time) > WINDOW_MS) {
-            rollingSum -= buffer.removeFirst().value;
-        }
-
-        if (needsImmediateUpdate || sett.mode == Constants.WORK_MODE.UNLOCK) {
-            lastLux = rawLux;
-            setBrightness((int) lastLux);
-
-            if (sett.mode == Constants.WORK_MODE.UNLOCK) {
-                needsImmediateUpdate = false;
-                stopListening();
-            } else {
-                needsImmediateUpdate = false;
-            }
-            return;
-        }
-
-        processSmoothedLux();
+        setBrightness((int) rawLux);
     }
 
     public void prepareForScreenOn() {
         needsImmediateUpdate = true;
-        resetSmoothingData(false);
         startListening();
     }
 
@@ -147,9 +111,6 @@ public class ShineControl implements SensorEventListener {
             delayer.removeCallbacksAndMessages(null);
 
             if (!onListen && lightSensor != null) {
-                if (sett.mode == Constants.WORK_MODE.UNLOCK || needsImmediateUpdate) {
-                    resetSmoothingData(false);
-                }
                 sMgr.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 onListen = true;
             }
@@ -190,13 +151,6 @@ public class ShineControl implements SensorEventListener {
     }
 
     /**
-     * Get last stored lux value used for calculating brightness.
-     * @return last lux level
-     */
-    @SuppressWarnings("unused")
-    public int getLastSensorValue() { return (int) lastLux; }
-
-    /**
      * Get current lux value read from sensor
      * @return raw lux level
      */
@@ -224,39 +178,6 @@ public class ShineControl implements SensorEventListener {
         return onListen;
     }
 
-    private void processSmoothedLux() {
-        if (buffer.isEmpty()) return;
-
-        // First apply: use last sample immediately
-        if (lastAppliedLux == -1f) {
-            lastLux = Objects.requireNonNull(buffer.peekLast()).value;
-            applyAndRecord(lastLux);
-            return;
-        }
-
-        float averageLux = rollingSum / buffer.size();
-        float diff = Math.abs(averageLux - lastAppliedLux);
-
-        if (diff > (lastAppliedLux * HYSTERESIS_THRESHOLD)) {
-            lastLux = averageLux;
-            applyAndRecord(lastLux);
-            resetSmoothingData(true);
-        }
-    }
-
-    private void applyAndRecord(float luxVal) {
-        setBrightness((int) luxVal);
-        lastAppliedLux = luxVal;
-    }
-
-    private void resetSmoothingData(boolean keepLastAppliedLux) {
-        if (!keepLastAppliedLux) {
-            lastAppliedLux = -1f;
-        }
-        buffer.clear();
-        rollingSum = 0f;
-    }
-
     private void scheduleSuspend() {
         if (sett.mode == Constants.WORK_MODE.ALWAYS) return;
         if (sett.mode == Constants.WORK_MODE.PORTRAIT && !landscape) return;
@@ -266,44 +187,42 @@ public class ShineControl implements SensorEventListener {
         delayer.postDelayed(new Runner(), PAUSE);
     }
 
-    private void setBrightness(int luxValue) {
+    private void setBrightness(int lux) {
+        float x1, y1, x2, y2;
         int brightness;
-
-        if (luxValue <= sett.l1) brightness = sett.b1;
-        else if (luxValue >= sett.l4) brightness = sett.b4;
+        if (lux <= sett.l1)
+            brightness = sett.b1;
+        else if (lux > sett.l4)
+            brightness = sett.b4;
         else {
-            float x1, y1, x2, y2;
+            x1 = sett.l3;
+            x2 = sett.l4;
+            y1 = sett.b3;
+            y2 = sett.b4;
 
-            if (luxValue <= sett.l2) { x1 = sett.l1; x2 = sett.l2; y1 = sett.b1; y2 = sett.b2; }
-            else if (luxValue <= sett.l3) { x1 = sett.l2; x2 = sett.l3; y1 = sett.b2; y2 = sett.b3; }
-            else { x1 = sett.l3; x2 = sett.l4; y1 = sett.b3; y2 = sett.b4; }
+            if (lux <= sett.l2) {
+                x1 = sett.l1;
+                x2 = sett.l2;
+                y1 = sett.b1;
+                y2 = sett.b2;
+            } else if (lux <= sett.l3) {
+                x1 = sett.l2;
+                x2 = sett.l3;
+                y1 = sett.b2;
+                y2 = sett.b3;
+            }
 
-            double lx = Math.log10((double) luxValue + 1.0);
-            double lx1 = Math.log10((double) x1 + 1.0);
-            double lx2 = Math.log10((double) x2 + 1.0);
-
-            double t = (lx2 - lx1 == 0) ? 0 : (lx - lx1) / (lx2 - lx1);
-            t = Math.max(0.0, Math.min(1.0, t));
-
-            brightness = (int) Math.round(y1 + (y2 - y1) * t);
+            float div = lux - x1;
+            float xlen = x2 - x1;
+            float ylen = y2 - y1;
+            float coef = div / xlen;
+            brightness = (int) (y1 + ylen * coef);
         }
 
-        try {
-            Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, convertToPWM(brightness));
-            sendBroadcastToService(getLiveBrightnessData());
-            if (MainActivity.debugEnabled) {
-                Log.d(TAG, String.format("Updating: %s:%s", luxValue, brightness));
-            }
-        } catch (Exception ignored) { }
-    }
-
-    private static class SensorReading {
-        final long time;
-        final float value;
-
-        SensorReading(long time, float value) {
-            this.time = time;
-            this.value = value;
+        Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, convertToPWM(brightness));
+        sendBroadcastToService(getLiveBrightnessData());
+        if (MainActivity.debugEnabled) {
+            Log.d(TAG, String.format("Updating: %s:%s", lux, brightness));
         }
     }
 

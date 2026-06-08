@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import com.mine.autoshine.Constants;
+import com.mine.autoshine.MainActivity;
 import com.mine.autoshine.MySettings;
 import com.mine.autoshine.R;
 import com.mine.autoshine.ShineControl;
@@ -170,26 +171,27 @@ public class ShineService extends Service {
     };
 
     private void createNotificationChannel() {
-        // Importance LOW keeps the notification silent but helps prevent the service
-        // from being killed for battery saving.
-        NotificationChannel channel = new NotificationChannel(
-                CHANNEL_ID, getString(R.string.service_name), NotificationManager.IMPORTANCE_LOW);
-        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {
+            // Importance LOW keeps the notification silent but helps prevent the service
+            // from being killed for battery saving.
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID, getString(R.string.service_name), NotificationManager.IMPORTANCE_LOW);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
             notificationManager.createNotificationChannel(channel);
 
-            Intent tapIntent = new Intent();
+            Intent tapIntent = new Intent(getApplicationContext(), MainActivity.class);
             tapIntent.putExtra(Constants.SERVICE_INTENT_EXTRA_TAP, 0);
             tapIntent.setAction(Constants.SERVICE_INTENT_ACTION);
+
             PendingIntent tapPendingIntent = PendingIntent.getBroadcast(
                     this, 0, tapIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
 
             Notification.Builder notificationBuilder = new Notification.Builder(this, CHANNEL_ID);
             Notification mNotification = notificationBuilder.setOngoing(true)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_tile_icon)
                     .setCategory(Notification.CATEGORY_SERVICE)
                     .setContentIntent(tapPendingIntent)
                     .build();

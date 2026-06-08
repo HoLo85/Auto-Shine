@@ -76,7 +76,7 @@ public class ShineControl implements SensorEventListener {
         public void run() {
             boolean ringing = false;
             if (mContext.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                int state = telephonyManager.getCallState();
+                int state = telephonyManager.getCallStateForSubscription();
                 ringing = (state == TelephonyManager.CALL_STATE_RINGING || state == TelephonyManager.CALL_STATE_OFFHOOK);
             }
 

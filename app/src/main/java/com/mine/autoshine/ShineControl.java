@@ -18,6 +18,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
 
+import com.mine.autoshine.services.ShineService;
+
 import java.util.ArrayDeque;
 import java.util.Objects;
 
@@ -53,7 +55,7 @@ public class ShineControl implements SensorEventListener {
     private final Context mContext;
     private final TelephonyManager telephonyManager;
 
-    ShineControl(ShineService service) {
+    public ShineControl(ShineService service) {
         shineService = service;
         sett = new MySettings(service.getApplicationContext());
         cResolver = service.getApplicationContext().getContentResolver();

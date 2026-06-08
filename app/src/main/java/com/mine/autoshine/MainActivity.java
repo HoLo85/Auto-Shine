@@ -27,6 +27,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mine.autoshine.services.ShineService;
+
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";

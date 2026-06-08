@@ -31,11 +31,11 @@
         </activity>
 
         <service
-            android:name=".ShineService"
+            android:name=".services.ShineService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync">
-            </service>
+        </service>
 
         <receiver
             android:name=".AutoStart"

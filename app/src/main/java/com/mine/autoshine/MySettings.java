@@ -14,7 +14,7 @@ public class MySettings {
     public int l1, l2, l3, l4, b1, b2, b3, b4;
     public Constants.WORK_MODE mode;
 
-    MySettings(Context context) {
+    public MySettings(Context context) {
         this.context = context;
         load();
     }

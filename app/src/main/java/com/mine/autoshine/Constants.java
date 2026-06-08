@@ -20,8 +20,8 @@ public final class Constants {
     public static final String SERVICE_INTENT_EXTRA = "com.mine.autoshine.EXTRA_COMMAND";
     public static final String SERVICE_INTENT_SENSOR = "com.mine.autoshine.SENSOR_COMMAND";
     public static final String SERVICE_INTENT_STATUS = "com.mine.autoshine.SERVICE_STATUS";
-    public static final String SERVICE_INTENT_PAYLOAD_SET = "update_settings";
-    public static final String SERVICE_INTENT_DEBUG_SET = "switch_debug";
+    public static final String SERVICE_INTENT_PAYLOAD_SET = "com.mine.autoshine.UPDATE_SETTINGS";
+    public static final String SERVICE_INTENT_DEBUG_SET = "com.mine.autoshine.SWITCH_DEBUG";
 
     // Keep the user-enabled preference centralized
     public static final String PREFS_NAME = "AutoShinePrefs";

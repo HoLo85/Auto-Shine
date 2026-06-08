@@ -1,4 +1,4 @@
-package com.mine.autoshine;
+package com.mine.autoshine.services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,6 +12,11 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.IBinder;
+
+import com.mine.autoshine.Constants;
+import com.mine.autoshine.MySettings;
+import com.mine.autoshine.R;
+import com.mine.autoshine.ShineControl;
 
 public class ShineService extends Service {
 

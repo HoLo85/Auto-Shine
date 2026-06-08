@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.mine.autoshine.services.ShineService;
+
 public class AutoStart extends BroadcastReceiver {
 
     private static final String TAG = "AutoStartReceiver";
